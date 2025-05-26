@@ -1,13 +1,22 @@
 - hosts: all
+  vars:
+    webPackage: "httpd"
+    docRoot: "/var/www/html"
+    webService: "httpd"
+    isStart: "started"
   tasks:
-    - package: 
-       name: "httpd"
+    - name: "install httpd software"
+      package: 
+       name: "{{ webPackage }}"
        state: present
+      register: packageRegister
 
-    - copy:
+    - name: "copy index.html file for web server"
+      copy:
        src: "index.html"
-       dest: "/var/www/html/index.html"
+       dest: "{{ docRoot }}/index.html"
 
-    - service:
-       name: "httpd"
-       state: started
+    - name: "start the httpd service"
+      service:
+       name: "{{ webService }}"
+       state: "{{ isStart }}"
